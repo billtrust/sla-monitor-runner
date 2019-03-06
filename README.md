@@ -149,7 +149,7 @@ iam-docker-run \
 
 For the maintainer - to publish an updated version of ssm-search, increment the version number in version.py and run the following:
 
-docker build -t sla-runner .
+docker build -t sla-runner . && \
 docker run --rm -it --entrypoint make sla-runner publish
 
 At the prompts, enter the username and password to the pypi.org repo.
