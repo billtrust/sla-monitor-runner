@@ -1,0 +1,17 @@
+.DS_Store
+.svn
+.cvs
+*.bak
+*.swp
+Thumbs.db
+.idea
+.sass-cache
+fire_app_log.txt
+
+.terraform
+Dockerfile.example
+*.egg-info
+*.tfstate
+*.tfstate.backup
+__pycache__
+test-output
