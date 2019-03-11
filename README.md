@@ -2,6 +2,8 @@
 
 This is the test runner portion of the SLA monitor/reporter. It performs tests (or any command you want) repeatedly, and publishes success/failure to an SNS topic for external processing (for example, using lambda to write to a custom cloudwatch metric), as well as optionally uploading logs to an S3 bucket.
 
+TODO: Unit tests not working
+
 ## Installing
 
 To install simply install via pip

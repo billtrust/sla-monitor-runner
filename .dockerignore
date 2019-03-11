@@ -2,3 +2,4 @@ terraform
 sla-runner.env
 .gitignore
 .git
+sla-example-container/
