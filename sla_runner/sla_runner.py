@@ -78,7 +78,6 @@ def get_topic_arn(sns_topic):
 
 def run_loop(args):
     exit_info, length = exec_command(args["command"].split(" "))
-    print("SLA Runner - testing ended with exit code {}".format(exit_info.returncode))
     result = exit_info.returncode == 0
     now = int(get_timestamp())
     message = {
@@ -94,6 +93,7 @@ def run_loop(args):
         result_name="SUCCESS"
     else:
         result_name="FAILURE"
+    print("Test result: {} with exit code {}; Execution time: {}".format(result_name, exit_info.returncode, length))
     filename="%s/%s_%s" % (args["service"], now, result_name)
     
     if not args["dry_run"]:
@@ -124,7 +124,9 @@ def main():
     print('SLA Runner version {}'.format(about['__version__']))
 
     args = get_args()
-    print(args["command"])
+    print("COMMAND:   " + args["command"])
+    print("SNS TOPIC: " + args["sns_topic_name"])
+    print("S3 BUCKET: " + args["s3_bucket_name"])
     if args["dry_run"]:
         run_loop(args)
     else:
