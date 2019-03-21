@@ -113,7 +113,7 @@ SNS topic arn to publish results to. It will be published as a JSON object. For 
     "service": "example-service",
     "group": ["dev-team", "critical"],
     "succeeded": true,
-    "timestamp": "1574514000",
+    "timestamp": "1574515200",
     "testExecutionSecs": "914" #seconds
 }
 ```
