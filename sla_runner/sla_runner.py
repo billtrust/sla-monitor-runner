@@ -127,8 +127,5 @@ def main():
     print("COMMAND:   " + args["command"])
     print("SNS TOPIC: " + args["sns_topic_name"])
     print("S3 BUCKET: " + args["s3_bucket_name"])
-    if args["dry_run"]:
+    while True:
         run_loop(args)
-    else:
-        while True:
-            run_loop(args)
