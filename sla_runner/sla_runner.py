@@ -7,13 +7,6 @@ import subprocess
 from time import sleep
 from datetime import datetime
 
-
-def signal_handler(sig, frame):
-    print("\nExiting...")
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
-
 class DatetimeEncoder(json.JSONEncoder):
     def default(self, obj):
         try:

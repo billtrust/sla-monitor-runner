@@ -143,7 +143,7 @@ iam-docker-run \
     --profile dev \
     --region us-east-1 \
     --host-source-path . \
-    --container-source-path /src
+    --container-source-path /src \
     --shell
 ```
 
