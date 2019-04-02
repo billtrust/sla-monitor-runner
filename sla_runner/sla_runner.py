@@ -70,6 +70,7 @@ def get_topic_arn(sns_topic):
 
 
 def run_loop(args):
+    print("Running...")
     exit_info, length = exec_command(args["command"].split(" "))
     result = exit_info.returncode == 0
     now = int(get_timestamp())
