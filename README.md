@@ -66,13 +66,11 @@ iam-docker-run \
     --image sla-monitor/sla-runner:latest
 ```
 
-iam-docker-run loads a custom env file (`iam-docker-run.env`) to prevent long commands like that. In ECS, add these as environment variables in the task definition or load from ssm via ssm-starter:
+In ECS, add these as environment variables in the task definition or load from ssm via ssm-starter:
 
 ```
 --full-entrypoint "ssm-starter --ssm-name slarunner --command 'sla-runner'"
 ```
-
-The terraform folder provides an ssm.tf file for you to place these parameters.
 
 ## Variables
 
@@ -114,7 +112,7 @@ SNS topic arn to publish results to. It will be published as a JSON object. For 
     "group": ["dev-team", "critical"],
     "succeeded": true,
     "timestamp": "1574515200",
-    "testExecutionSecs": "914" #seconds
+    "testExecutionSecs": "914"
 }
 ```
 
