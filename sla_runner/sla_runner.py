@@ -70,7 +70,7 @@ def get_topic_arn(sns_topic):
 
 
 def run_loop(args):
-    print("Running...")
+    print("Beginning new loop...")
     exit_info, length = exec_command(args["command"].split(" "))
     result = exit_info.returncode == 0
     now = int(get_timestamp())
@@ -121,5 +121,9 @@ def main():
     print("COMMAND:   " + args["command"])
     print("SNS TOPIC: " + args["sns_topic_name"])
     print("S3 BUCKET: " + args["s3_bucket_name"])
-    while True:
-        run_loop(args)
+    try:
+        while True:
+            run_loop(args)
+    except KeyboardInterrupt:
+        print("Exiting")
+        sys.exit(1)
