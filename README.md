@@ -53,12 +53,12 @@ docker build -t sla-monitor/sla-runner:latest .
 
 export AWS_ENV="dev"
 iam-docker-run \
-    -e "SLARUNNER_COMMAND='/bin/bash /src/test-scripts/run-tests.sh'" \
-    -e "SLARUNNER_SERVICE=example-service" \
-    -e "SLARUNNER_GROUPS='dev-team,critical'" \
-    -e "SLARUNNER_DELAY=30" \
-    -e "SLARUNNER_SNSTOPICARN='arn:aws:sns:us-east-1::sla-monitoring-worker-$AWS_ENV'" \
-    -e "SLARUNNER_S3BUCKETNAME='sla-monitoring-logs-$AWS_ENV'" \
+    -e SLARUNNER_COMMAND="/bin/bash /src/test-scripts/run-tests.sh" \
+    -e SLARUNNER_SERVICE=example-service \
+    -e SLARUNNER_GROUPS="dev-team,critical" \
+    -e SLARUNNER_DELAY=30 \
+    -e SLARUNNER_SNSTOPICNAME="sla-monitor-result-published-$AWS_ENV" \
+    -e SLARUNNER_S3BUCKETNAME="sla-monitoring-logs-$AWS_ENV" \
     --full-entrypoint "sla-runner" \
     --region us-east-1 \
     --profile $AWS_ENV \

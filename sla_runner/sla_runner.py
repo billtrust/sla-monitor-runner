@@ -32,7 +32,7 @@ def exec_command(command):
     """Shell execute a command and return the exit code."""
     try:
         startTime = get_timestamp()
-        p = subprocess.run(command, capture_output=True)
+        p = subprocess.run(command,  stdout=subprocess.PIPE,  stderr=subprocess.STDOUT, shell=True)
         length = round(get_timestamp() - startTime, 4)
     except Exception as e:
         print("Error executing command: {}".format(e))
