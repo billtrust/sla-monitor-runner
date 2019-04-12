@@ -15,5 +15,5 @@ Dockerfile.example
 *.tfstate.backup
 __pycache__
 test-output
-
+dist
 iam-docker-run.env
