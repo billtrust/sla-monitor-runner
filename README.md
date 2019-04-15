@@ -24,18 +24,21 @@ This project assumes you are using role based authentication, as would be used i
 
 Excute the following in the root folder to run terraform. Obviously, have Terraform installed. Set the bucket and table variables to existing backend resources for remote state.
 
+**IMPORTANT: IF YOU ARE SWITCHING ACCOUNTS (e.g. dev, stage, prod), DELETE THE .terraform FOLDER BEFORE RUNNING IN THE NEW ENVIRONMENT**
+
 ```shell
 # pip install iam-starter
 cd terraform && \
 export AWS_ENV="dev" && \
+export AWS_BACKEND_REGION="us-east-1" && \
 export AWS_DEFAULT_REGION="us-east-1" && \
-export AWS_REMOTE_BUCKET="company-tfstate-dev" && \
-export AWS_REMOTE_TABLE="tfstate_dev" && \
+export AWS_REMOTE_BUCKET="billtrust-tfstate-$AWS_ENV" && \
+export AWS_REMOTE_TABLE="tfstate_$AWS_ENV" && \
 iam-starter \
     --profile $AWS_ENV \
     --command \
         "terraform init \
-        -backend-config=\"region=$AWS_DEFAULT_REGION\" \
+        -backend-config=\"region=$AWS_BACKEND_REGION\" \
         -backend-config=\"bucket=$AWS_REMOTE_BUCKET\" \
         -backend-config=\"dynamodb_table=$AWS_REMOTE_TABLE\" && \
         terraform apply \

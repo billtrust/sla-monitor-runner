@@ -52,6 +52,16 @@ resource "aws_iam_policy" "sla-monitor-runner-policy" {
                 "${aws_s3_bucket.sla-monitor-runner-logs-bucket.arn}",
                 "${aws_s3_bucket.sla-monitor-runner-logs-bucket.arn}/*"
             ]
+        },
+        {
+            "Sid": "SLARunnerSSM",
+            "Action": [
+                "ssm:Get*"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/${var.aws_env}/sla-monitor-globals/"
+            ]
         }
     ]
 }
