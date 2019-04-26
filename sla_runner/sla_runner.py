@@ -30,14 +30,32 @@ def split_groups(groups):
 
 def exec_command(command):
     """Shell execute a command and return the exit code."""
+    print("Executing: {}".format(command))
+
+    total_output = ''
+
     try:
         startTime = get_timestamp()
-        p = subprocess.run(command,  stdout=subprocess.PIPE,  stderr=subprocess.STDOUT, shell=True)
+        p = subprocess.Popen(" ".join(command), stdout=subprocess.PIPE,  stderr=subprocess.STDOUT, shell=True)
+
+        # Keep reading output and print until process exits
+        while True:
+            output = p.stdout.readline().decode("utf-8")
+            if output == '' and p.poll() is not None:
+                break
+            if output:
+                total_output += '\n' + output  # Put output back together for usage later
+                print(output.rstrip())
+        
         length = round(get_timestamp() - startTime, 4)
+        return_code = int(p.poll())
+
+        return { "return_code": return_code, "stdout": total_output, "process_time": length }
+
     except Exception as e:
         print("Error executing command: {}".format(e))
-        return 1, None
-    return p, length
+        return { "return_code": 1, "stdout": total_output, "process_time": None }
+
 
 
 def get_args():
@@ -71,14 +89,14 @@ def get_topic_arn(sns_topic):
 
 def run_loop(args):
     print("Beginning new loop...")
-    exit_info, length = exec_command(args["command"].split(" "))
-    result = exit_info.returncode == 0
+    exec_result = exec_command(args["command"].split(" "))
+    result = exec_result["return_code"] == 0
     now = int(get_timestamp())
     message = {
             "timestamp": now,
             "succeeded": result,
             "service": args["service"],
-            "testExecutionSecs": length,
+            "testExecutionSecs": exec_result["process_time"],
             "groups": split_groups(args["groups"])
         }
     message_encoded = json.dumps(message, cls=DatetimeEncoder, separators=(",", ":"))
@@ -87,7 +105,7 @@ def run_loop(args):
         result_name="SUCCESS"
     else:
         result_name="FAILURE"
-    print("Test result: {} with exit code {}; Execution time: {}".format(result_name, exit_info.returncode, length))
+    print("Test result: {} with exit code {}; Execution time: {}".format(result_name, exec_result["return_code"], exec_result["process_time"]))
     filename="%s/%s_%s" % (args["service"], now, result_name)
     
     if not args["dry_run"]:
@@ -99,13 +117,13 @@ def run_loop(args):
         )
         if args["s3_bucket_name"]:
             s3 = boto3.client("s3")
-            s3.put_object(Body=exit_info.stdout, Bucket=args["s3_bucket_name"], Key=filename)
+            s3.put_object(Body=exec_result["stdout"], Bucket=args["s3_bucket_name"], Key=filename)
 
         sleep(int(args["delay"]))
     else:
         print(arn)
         print(message_encoded)
-        print(exit_info.stdout.decode('utf8'))
+        print(exec_result["stdout"])
         print(filename)
 
 
