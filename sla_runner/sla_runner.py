@@ -143,8 +143,8 @@ def main():
     try:
         if args["disabled"] is not None and args["disabled"].upper() == "TRUE":
             print("SLA Monitor is disabled.  To enable SLA Monitor,",
-                    "please set SSM parameter SLARUNNER_DISABLED to",
-                    "true and rerun sla-runner.")
+                    "please either set SSM parameter SLARUNNER_DISABLED to",
+                    "false or unset the parameter and rerun sla-runner.")
             while True:
                 sleep(60)
         while True:
