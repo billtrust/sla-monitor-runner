@@ -103,6 +103,12 @@ $SLARUNNER_DELAY
 
 How long to wait between commands being run in seconds.
 
+#### disabled
+
+$SLARUNNER_DISABLED
+
+To disable sla-runner at startup.
+
 #### sns-topic-arn
 
 $SLARUNNER_SNSTOPICARN

@@ -66,6 +66,7 @@ def get_args():
         "service": os.getenv("SLARUNNER_SERVICE") or None,
         "groups": os.getenv("SLARUNNER_GROUPS") or None,
         "delay": os.getenv("SLARUNNER_DELAY") or None,
+        "disabled": os.getenv("SLARUNNER_DISABLED") or None,
         "dry_run": bool(os.getenv("SLARUNNER_DRYRUN"))
     }
     if args["command"] == None or args["delay"] == None or args["service"] == None or args["sns_topic_name"] == None:
@@ -140,6 +141,12 @@ def main():
     print("SNS TOPIC: " + args["sns_topic_name"])
     print("S3 BUCKET: " + args["s3_bucket_name"])
     try:
+        if args["disabled"] is not None and args["disabled"].upper() == "TRUE":
+            print("SLA Monitor is disabled.  To enable SLA Monitor,",
+                    "please set SSM parameter SLARUNNER_DISABLED to",
+                    "true and rerun sla-runner.")
+            while True:
+                sleep(60)
         while True:
             run_loop(args)
     except KeyboardInterrupt:

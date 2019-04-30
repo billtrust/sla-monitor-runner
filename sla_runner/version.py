@@ -1,4 +1,4 @@
-__version__ = '0.0.6'
+__version__ = '0.0.7'
 __title__ = 'sla-runner'
 __description__ = 'A continuous test runner for gathering SLA data'
 __url__ = 'https://github.com/billtrust/sla-monitor-runner'
