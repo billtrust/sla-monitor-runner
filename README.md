@@ -24,25 +24,24 @@ This project assumes you are using role based authentication, as would be used i
 
 Excute the following in the root folder to run terraform. Obviously, have Terraform installed. Set the bucket and table variables to existing backend resources for remote state.
 
-**IMPORTANT: IF YOU ARE SWITCHING ACCOUNTS (e.g. dev, stage, prod), DELETE THE .terraform FOLDER BEFORE RUNNING IN THE NEW ENVIRONMENT**
-
 ```shell
 # pip install iam-starter
-cd terraform && \
-export AWS_ENV="dev" && \
-export AWS_BACKEND_REGION="us-east-1" && \
-export AWS_DEFAULT_REGION="us-east-1" && \
-export AWS_REMOTE_BUCKET="billtrust-tfstate-$AWS_ENV" && \
-export AWS_REMOTE_TABLE="tfstate_$AWS_ENV" && \
+cd terraform
+export AWS_ENV="dev"
+export TF_DATA_DIR="./.$AWS_ENV-terraform/"
+export AWS_DEFAULT_REGION="us-east-1"
+export TF_STATE_REGION="us-east-1"
+export TF_STATE_BUCKET="mycompany-tfstate-$AWS_ENV"
+export TF_STATE_TABLE="tfstate_$AWS_ENV"
+
 iam-starter \
     --profile $AWS_ENV \
     --command \
         "terraform init \
-        -backend-config=\"region=$AWS_BACKEND_REGION\" \
-        -backend-config=\"bucket=$AWS_REMOTE_BUCKET\" \
-        -backend-config=\"dynamodb_table=$AWS_REMOTE_TABLE\" && \
+        -backend-config=\"region=$TF_STATE_REGION\" \
+        -backend-config=\"bucket=$TF_STATE_BUCKET\" \
+        -backend-config=\"dynamodb_table=$TF_STATE_TABLE\" && \
         terraform apply \
-        --auto-approve \
         -var \"aws_env=$AWS_ENV\" \
         -var \"aws_region=$AWS_DEFAULT_REGION\""
 ```
@@ -78,6 +77,21 @@ In ECS, add these as environment variables in the task definition or load from s
 ## Variables
 
 The runner takes the following values which are provided by environment variable. 
+
+### Global variables
+
+When loading variables via SSM and ssm-starter, you can define default variables by adding a globals path before the service path.
+
+For example, in your task definition in terraform:
+
+```json
+    "entryPoint": ["ssm-starter"],
+    "command": [
+        "--ssm-name", "sla-monitor-globals",
+        "--ssm-name", "${var.application}",
+        "--command", "sla-runner" // or script that runs sla-runner
+    ]
+```
 
 #### command
 
@@ -140,7 +154,7 @@ If there is any value at all in this variable, the test will run once, output th
 ## Development and Testing
 
 ```bash
-docker build -t sla-runner:latest -f Dockerfile .
+docker build -t sla-runner:latest .
 ```
 
 ```bash

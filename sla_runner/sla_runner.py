@@ -100,7 +100,7 @@ def run_loop(args):
             "testExecutionSecs": exec_result["process_time"],
             "groups": split_groups(args["groups"])
         }
-    message_encoded = json.dumps(message, cls=DatetimeEncoder, separators=(",", ":"))
+    message_encoded = json.dumps(message)#, cls=DatetimeEncoder, separators=(",", ":"))
     arn = get_topic_arn(args["sns_topic_name"])
     if result:
         result_name="SUCCESS"
@@ -108,7 +108,7 @@ def run_loop(args):
         result_name="FAILURE"
     print("Test result: {} with exit code {}; Execution time: {}".format(result_name, exec_result["return_code"], exec_result["process_time"]))
     filename="%s/%s_%s" % (args["service"], now, result_name)
-    
+
     if not args["dry_run"]:
         client = boto3.client('sns')
         response = client.publish(
