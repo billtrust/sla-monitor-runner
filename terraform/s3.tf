@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "sla-monitor-runner-logs-bucket" {
     enabled = true
 
     expiration {
-      days = 3
+      days = 90
     }
   }
 }
