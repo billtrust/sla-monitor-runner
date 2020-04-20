@@ -5,7 +5,6 @@ import boto3
 import signal
 import subprocess
 from time import sleep
-from time import time
 from datetime import datetime
 
 class DatetimeEncoder(json.JSONEncoder):
@@ -17,7 +16,7 @@ class DatetimeEncoder(json.JSONEncoder):
 
 
 def get_timestamp():
-    return int(round(time() * 1000))
+    return datetime.today().timestamp()
 
 
 def split_groups(groups):
@@ -48,7 +47,7 @@ def exec_command(command):
                 total_output += '\n' + output  # Put output back together for usage later
                 print(output.rstrip())
         
-        length = get_timestamp() - startTime
+        length = round(get_timestamp() - startTime, 4)
         return_code = int(p.poll())
 
         return { "return_code": return_code, "stdout": total_output, "process_time": length }
@@ -70,7 +69,8 @@ def get_args():
         "delay": os.getenv("SLARUNNER_DELAY") or None,
         "disabled": os.getenv("SLARUNNER_DISABLED") or None,
         "dry_run": bool(os.getenv("SLARUNNER_DRYRUN")),
-        "slaTarget": os.getenv("slaTarget") or 99.9,
+        "slaAG": os.getenv("SLA_AG") or 99.9,
+        "duration": os.getenv("DURATION") or 1,
     }
     if args["command"] == None or \
         args["delay"] == None or \
@@ -98,7 +98,7 @@ def run_loop(args):
     print("Beginning new loop...")
     exec_result = exec_command(args["command"].split(" "))
     result = exec_result["return_code"] == 0
-    now = get_timestamp()
+    now = int(get_timestamp())
     message = {
             "timestamp": now,
             "succeeded": result,
@@ -106,7 +106,8 @@ def run_loop(args):
             "testExecutionSecs": exec_result["process_time"],
             "groups": split_groups(args["groups"]),
             "tagID": args["tagID"],
-            "slaTarget": args["slaTarget"],
+            "slaAG": args["slaAG"],
+            "duration": args["duration"],
         }
     message_encoded = json.dumps(message)#, cls=DatetimeEncoder, separators=(",", ":"))
     arn = get_topic_arn(args["sns_topic_name"])

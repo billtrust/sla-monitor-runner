@@ -4,6 +4,7 @@ publish-test:
 	twine upload -r pypitest dist/*
 
 publish:
-	#rm -r dist/*
-	python setup.py sdist
+	#rm -r dist
+	python3 setup.py sdist bdist_wheel
+	twine check dist/*
 	twine upload dist/*
