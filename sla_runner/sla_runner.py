@@ -4,8 +4,8 @@ import json
 import boto3
 import signal
 import subprocess
-from time import sleep
-from time import time
+import calendar
+import time
 from datetime import datetime
 
 class DatetimeEncoder(json.JSONEncoder):
@@ -17,7 +17,7 @@ class DatetimeEncoder(json.JSONEncoder):
 
 
 def get_timestamp():
-    return int(round(time() * 1000))
+    return calendar.timegm(time.gmtime())
 
 
 def split_groups(groups):
@@ -70,7 +70,7 @@ def get_args():
         "delay": os.getenv("SLARUNNER_DELAY") or None,
         "disabled": os.getenv("SLARUNNER_DISABLED") or None,
         "dry_run": bool(os.getenv("SLARUNNER_DRYRUN")),
-        "slaTarget": os.getenv("slaTarget") or 99.9,
+        "target": os.getenv("SLA_TARGET") or 99.9,
     }
     if args["command"] == None or \
         args["delay"] == None or \
@@ -128,7 +128,7 @@ def run_loop(args):
             s3 = boto3.client("s3")
             s3.put_object(Body=exec_result["stdout"], Bucket=args["s3_bucket_name"], Key=filename)
 
-        sleep(int(args["delay"]))
+        time.sleep(int(args["delay"]))
     else:
         print(arn)
         print(message_encoded)
@@ -154,7 +154,7 @@ def main():
                     "please either set SSM parameter SLARUNNER_DISABLED to",
                     "false or unset the parameter and rerun sla-runner.")
             while True:
-                sleep(60)
+                time.sleep(60)
         while True:
             run_loop(args)
     except KeyboardInterrupt:
