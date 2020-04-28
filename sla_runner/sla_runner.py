@@ -106,7 +106,7 @@ def run_loop(args):
             "testExecutionSecs": exec_result["process_time"],
             "groups": split_groups(args["groups"]),
             "tagID": args["tagID"],
-            "slaTarget": args["slaTarget"],
+            "slaTarget": args["target"],
         }
     message_encoded = json.dumps(message)#, cls=DatetimeEncoder, separators=(",", ":"))
     arn = get_topic_arn(args["sns_topic_name"])
